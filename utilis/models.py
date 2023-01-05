@@ -43,3 +43,23 @@ def inhibition_model_fb(y, t, u, mu_max, yxs, ks, ypx, ki, sf):
     # dp = ypx*growth_rate*x 
 
     return np.array([dx, ds, dV])
+
+# ANN for batch process
+
+# Define model
+import torch.nn as nn
+def fnn_model(input_dim, output_dim, hidden_dim, hidden_layers):
+    layers = []
+    layers.append(nn.Linear(input_dim, hidden_dim))
+    for _ in range(hidden_layers):
+        layers.append(nn.Linear(hidden_dim, hidden_dim)) 
+        layers.append(nn.Softplus()) 
+    layers.append(nn.Linear(hidden_dim, output_dim))
+    net = nn.Sequential(*layers) 
+    net.to('cpu').double()
+
+    for m in net.modules():
+        if type(m) == nn.Linear:
+            # Initialize the weights of the Linear module using xavier_uniform_
+            nn.init.xavier_uniform_(m.weight)
+    return net
