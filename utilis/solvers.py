@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from torch import nn
 
 # Function to apply the solver method
 def euler(f, x0, t0, tf, dt, u, *kargs):
