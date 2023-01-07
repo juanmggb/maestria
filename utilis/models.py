@@ -1,4 +1,5 @@
 import numpy as np
+import torch.nn as nn
 
 # Monod model
 def monod_model(y, t, u,  mu_max, yxs, ks, ypx):
@@ -46,8 +47,8 @@ def inhibition_model_fb(y, t, u, mu_max, yxs, ks, ypx, ki, sf):
 
 # ANN for batch process
 
-# Define model
-import torch.nn as nn
+
+
 def fnn_model(input_dim, output_dim, hidden_dim, hidden_layers):
     layers = []
     layers.append(nn.Linear(input_dim, hidden_dim))
@@ -63,3 +64,25 @@ def fnn_model(input_dim, output_dim, hidden_dim, hidden_layers):
             # Initialize the weights of the Linear module using xavier_uniform_
             nn.init.xavier_uniform_(m.weight)
     return net
+
+
+
+#@title bioreactor model
+def inhibition_model_nn(t, x):
+    b = x[:, 0]
+    s = x[:, 1]
+    p = x[:, 2]
+
+    # Kinetic parameters
+    mu = 1.2 # 1/h
+    ks = 280 # g/L
+    Yxs = 0.2 
+    Ypx = 4 
+    ki = 0.3
+
+    # Mass balances
+    db = mu*(s / (ks + s + ki*s**2))*b 
+    ds = -1/Yxs*mu*(s / (ks + s + ki*s**2))*b 
+    dp = Ypx*mu*(s / (ks + s + ki*s**2))*b
+
+    return torch.stack((db, ds, dp), dim=-1)
