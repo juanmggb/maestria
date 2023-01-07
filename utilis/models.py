@@ -1,5 +1,6 @@
 import numpy as np
 import torch.nn as nn
+import torch 
 
 # Monod model
 def monod_model(y, t, u,  mu_max, yxs, ks, ypx):
@@ -49,7 +50,10 @@ def inhibition_model_fb(y, t, u, mu_max, yxs, ks, ypx, ki, sf):
 
 
 
-def fnn_model(input_dim, output_dim, hidden_dim, hidden_layers):
+def fnn_model(input_dim, 
+              output_dim, 
+              hidden_dim, 
+              hidden_layers):
     layers = []
     layers.append(nn.Linear(input_dim, hidden_dim))
     for _ in range(hidden_layers):
